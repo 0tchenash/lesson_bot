@@ -2,6 +2,7 @@ from core.create_bot import dp
 from aiogram.utils import executor
 from handlers import client
 
+
 async def on_startup(_):
     print('бот вышел в онлайн')
 
