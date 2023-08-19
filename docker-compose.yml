@@ -7,7 +7,7 @@ services:
       pg:
         condition: service_healthy
     command: >
-      sh -c "alembic upgrade head"
+      sh -c "alembic upgrade head && python bot.py"
 
 
   pg:
