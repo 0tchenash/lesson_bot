@@ -1,9 +1,18 @@
 version: "3.3"
 
 services:
+  bot:
+    build: .
+    depends_on:
+      pg:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head"
+
+
   pg:
     container_name: pg
-    image: postgres:latest
+    image: postgres:14.3-alpine
     env_file:
       ./.env
     environment:
