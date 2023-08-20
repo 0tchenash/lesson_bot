@@ -33,5 +33,23 @@ async def choosed_group_command(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
 
 
+@dp.callback_query_handler(text='choosed_single_lesson')
+async def choosed_single_command(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+
+
+@dp.message_handler(commands='choosed_group_lesson')
+async def choosed_day_command(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+
+
+@dp.callback_query_handler(text='choosed_single_lesson')
+async def choosed_single_command(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+
+
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands=['start'])
