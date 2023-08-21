@@ -21,8 +21,8 @@ class Lessons_base(Base):
     total_price = Column(DECIMAL)
     user_id = Column(Integer, ForeignKey('user.id'))
     lesson_id = Column(Integer, ForeignKey('lesson.id'))
-    user = relationship("User", foreign_keys=id)
-    lesson = relationship("Lesson", foreign_keys=id)
+    user = relationship("User", foreign_keys=user_id)
+    lesson = relationship("Lesson", foreign_keys=lesson_id)
 
 
 class Lesson(Base):
@@ -37,8 +37,9 @@ class Days(Base):
     __tablename__ = "day"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    lesson_date = Column(Date)
-    is_works = Column(Boolean)
+    lesson_date = Column(String)
+    day_name = Column(String)
+    is_works = Column(Boolean, default=False)
 
 
 class Intervals(Base):
