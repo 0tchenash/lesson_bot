@@ -14,6 +14,12 @@ BTN_CHOOSED_GL = InlineKeyboardButton('Подходит!',
 BTN_CHOOSED_SL = InlineKeyboardButton('Подходит!',
                                          callback_data='choosed_single_lesson')
 
+
+def get_kb_days(data):
+    kb = ReplyKeyboardMarkup(row_width=5, resize_keyboard=True).add(
+        [KeyboardButton(i) for i in data]
+    )
+    return kb
 DAY1 = KeyboardButton('day_1')
 DAY2 = KeyboardButton('day_2')
 DAY3 = KeyboardButton('day_3')
@@ -45,6 +51,7 @@ SINGLE = InlineKeyboardMarkup(row_width=1).add(
 
 DAYS = ReplyKeyboardMarkup(row_width=5, resize_keyboard=True).add(
     DAY1, DAY2, DAY3, DAY4, DAY5)
+
 INTERVALS = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True).add(
     TIME_INTERVAL1, TIME_INTERVAL2, TIME_INTERVAL3, TIME_INTERVAL4,
     TIME_INTERVAL5, TIME_INTERVAL6)

@@ -2,11 +2,13 @@ from aiogram import types
 from aiogram.dispatcher import Dispatcher
 from keyboard.kb_client import START, FORMAT, GROUP, SINGLE, DAYS
 from core.create_bot import dp, bot
-from core.implemented import week_services
+from core.implemented import week_services, week_schemas
+
 
 async def process_start_command(message: types.Message):
     week_services.sorted_data_week()
-    await message.reply("Привет!\nЭтот бот поможет тебе записаться на урок!",
+    data = week_services.get_all_weekday()
+    await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!{week_schemas.dump(data)}",
                         reply_markup=START)
 
 

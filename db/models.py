@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base, DeclarativeBase
+from marshmallow import Schema, fields
 
 
 Base: DeclarativeBase = declarative_base()
@@ -13,6 +14,10 @@ class User(Base):
     user_name = Column(String)
     phone_number = Column(String)
 
+class UserSchema(Schema):
+    id = fields.Int()
+    user_name = fields.Str()
+    phone_number = fields.Str()
 
 class Lessons_base(Base):
     __tablename__ = 'lessons_base'
@@ -24,6 +29,12 @@ class Lessons_base(Base):
     user = relationship("User", foreign_keys=user_id)
     lesson = relationship("Lesson", foreign_keys=lesson_id)
 
+class LessonsBaseSchema(Schema):
+    id = fields.Int()
+    time = fields.Str()
+    total_price = fields.Decimal()
+    user_id = fields.Int()
+    lesson_id = fields.Int()
 
 class Lesson(Base):
     __tablename__ = "lesson"
@@ -33,6 +44,14 @@ class Lesson(Base):
     price = Column(DECIMAL)
 
 
+class LessonSchema(Schema):
+    __tablename__ = "lesson"
+
+    id = fields.Int()
+    type = fields.Str()
+    price = fields.Decimal()
+    
+    
 class Days(Base):
     __tablename__ = "day"
 
@@ -42,6 +61,13 @@ class Days(Base):
     is_works = Column(Boolean, default=False)
 
 
+class DaysSchema(Schema):
+
+    id = fields.Int()
+    lesson_date = fields.Str()
+    day_name = fields.Str()
+    is_works = fields.Boolean()
+
 class Intervals(Base):
     __tablename__ = "interval"
 
@@ -49,6 +75,11 @@ class Intervals(Base):
     lesson_time = Column(String)
     is_works = Column(Boolean)
 
+
+class IntervalsSchema(Schema):
+    id = fields.Int()
+    lesson_time = fields.Str()
+    is_works = fields.Boolean()
 
 class DaysIntervals(Base):
     __tablename__ = "day_interval"
