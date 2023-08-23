@@ -1,14 +1,13 @@
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
-from keyboard.kb_client import START, FORMAT, GROUP, SINGLE, DAYS
+from keyboard.kb_client import START, FORMAT, GROUP, SINGLE, get_kb_days
 from core.create_bot import dp, bot
 from core.implemented import week_services, week_schemas
-
+from handlers.utils import get_data_week
 
 async def process_start_command(message: types.Message):
     week_services.sorted_data_week()
-    data = week_services.get_all_weekday()
-    await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!{week_schemas.dump(data)}",
+    await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!",
                         reply_markup=START)
 
 
@@ -33,25 +32,25 @@ async def choose_group_command(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text='choosed_group_lesson')
 async def choosed_group_command(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
 
 
 @dp.callback_query_handler(text='choosed_single_lesson')
 async def choosed_single_command(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
 
 
 @dp.message_handler(commands='choosed_group_lesson')
 async def choosed_day_command(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
 
 
 @dp.callback_query_handler(text='choosed_single_lesson')
 async def choosed_single_command(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=DAYS)
+    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
 
 
 def register_handler_client(dp: Dispatcher):
