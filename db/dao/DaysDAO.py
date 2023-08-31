@@ -1,5 +1,5 @@
 from db.dao.models.days import Days
-from utils import generate_week
+from db.utils import generate_week
 
 class WeekdayDAO:
     def __init__(self, session):
