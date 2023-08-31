@@ -1,4 +1,4 @@
-from db.dao.models.lessons import Lesson
+from db.dao.models import Lesson
 
 class LessonDAO:
     def __init__(self, session):

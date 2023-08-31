@@ -1,4 +1,4 @@
-from db.dao.models.days import Days
+from db.dao.models import Days
 from db.utils import generate_week
 
 class WeekdayDAO:
