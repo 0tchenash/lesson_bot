@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
-from handlers.keyboards.kb_client import START, CHOOSE, FORMAT, GROUP, SINGLE, get_kb_days, get_kb_intervals
+from handlers.keyboards.kb_client import START, CHOOSE, GET_PHONE, FORMAT, GROUP, SINGLE, get_kb_days, get_kb_intervals
 from core.create_bot import dp, bot
 from core.implemented import week_schemas, interval_schemas, user_services
 from handlers.utils import get_data_week, get_intervals
@@ -11,17 +11,25 @@ async def process_start_command(message: types.Message):
                         reply_markup=START)
 
 @dp.callback_query_handler(text='add_user_data')
-async def add_user(message: types.Message):
+async def add_user(callback_query: types.CallbackQuery):
 
-    contact = message.contact
-    user = user_services.create(message, contact)
+    user = user_services.create(callback_query)
 
-    if user:
-        await message.answer('Вы успешно зарегестрировались!')
+    if not user:
+        await bot.send_message(callback_query.from_user.id, 'Вы успешно зарегестрировались!')
     else:
-        await message.answer('Вы уже зарегестрированы!')
+        await bot.send_message(callback_query.from_user.id, 'Вы уже зарегестрированы!')
 
-    await message.answer(message.from_user.id, "INFO", reply_markup=CHOOSE)
+    await bot.send_message(callback_query.from_user.id, "Нужен ваш номер телефона", reply_markup=GET_PHONE)
+
+
+@dp.message_handler(content_types=types.ContentType.CONTACT)
+async def add_number(message: types.Message):
+
+    user_services.update(message)
+
+    await bot.send_message(message.from_user.id, "INFO", reply_markup=CHOOSE)
+
 
 @dp.callback_query_handler(text='choose_lesson')
 async def choose_lesson_command(callback_query: types.CallbackQuery):

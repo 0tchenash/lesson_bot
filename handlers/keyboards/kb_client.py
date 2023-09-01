@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
-BTN_ADD_USER_DATA = KeyboardButton('Записаться!',
+BTN_ADD_USER_DATA = InlineKeyboardButton('Записаться!',
                                          callback_data='add_user_data')
 BTN_CHOOSE_LESSON = InlineKeyboardButton('Дальше',
                                          callback_data='choose_lesson')
@@ -36,3 +36,5 @@ GROUP = InlineKeyboardMarkup(row_width=1).add(
     BTN_SINGLE_LESSON, BTN_CHOOSED_GL)
 SINGLE = InlineKeyboardMarkup(row_width=1).add(
     BTN_GROUP_LESSON, BTN_CHOOSED_SL)
+
+GET_PHONE = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(KeyboardButton('Поделиться контактом', request_contact=True))
