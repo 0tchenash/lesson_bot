@@ -1,6 +1,6 @@
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+from sqlalchemy.orm import DeclarativeBase, declarative_base
 
-Base: DeclarativeMeta = declarative_base()
+Base: DeclarativeBase = declarative_base()
 
 from .days_intervals import DaysIntervals
 from .days import Days

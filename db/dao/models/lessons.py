@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DECIMAL
-from sqlalchemy.orm import relationship
-from db.setup_db import Base
+from db.dao.models import Base
+
 
 class Lesson(Base):
     __tablename__ = "lesson"

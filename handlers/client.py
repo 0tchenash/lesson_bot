@@ -10,7 +10,7 @@ async def process_start_command(message: types.Message):
     await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!",
                         reply_markup=START)
 
-@dp.message_handler(commands='add_user_data')
+@dp.callback_query_handler(text='add_user_data')
 async def add_user(message: types.Message):
 
     contact = message.contact

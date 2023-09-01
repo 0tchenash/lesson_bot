@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from db.setup_db import Base
+from db.dao.models import Base
+
 
 class Intervals(Base):
     __tablename__ = "interval"

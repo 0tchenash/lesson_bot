@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from db.setup_db import Base
+from db.dao.models import Base
 
 class DaysIntervals(Base):
     __tablename__ = "day_interval"
