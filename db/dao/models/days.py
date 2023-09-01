@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 from db.dao.models import Base
 
 class Days(Base):
@@ -8,3 +9,4 @@ class Days(Base):
     lesson_date = Column(String)
     day_name = Column(String)
     is_works = Column(Boolean, default=False)
+    intervals = relationship("Intervals", secondary="day_interval")

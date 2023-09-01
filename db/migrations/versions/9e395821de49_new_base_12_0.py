@@ -1,8 +1,8 @@
-"""new base 11.0
+"""new base 12.0
 
-Revision ID: 08e5aed7b900
+Revision ID: 9e395821de49
 Revises: 
-Create Date: 2023-09-01 14:13:39.433226
+Create Date: 2023-09-01 16:32:28.600858
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '08e5aed7b900'
+revision: str = '9e395821de49'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,7 +30,6 @@ def upgrade() -> None:
     op.create_table('interval',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('lesson_time', sa.String(), nullable=True),
-    sa.Column('is_works', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('lesson',
@@ -52,6 +51,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('day_id', sa.Integer(), nullable=True),
     sa.Column('interval_id', sa.Integer(), nullable=True),
+    sa.Column('is_works', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['day_id'], ['day.id'], ),
     sa.ForeignKeyConstraint(['interval_id'], ['interval.id'], ),
     sa.PrimaryKeyConstraint('id')

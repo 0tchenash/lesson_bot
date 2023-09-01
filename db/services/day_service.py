@@ -4,7 +4,7 @@ class DayService:
     def __init__(self, dao: WeekdayDAO):
         self.dao = dao
 
-    def create_all_weekdays(self, ):
+    def create_all_weekdays(self ):
         self.dao.create_all()
 
     def get_all_weekdays(self):

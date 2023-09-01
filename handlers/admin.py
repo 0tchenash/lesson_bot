@@ -11,7 +11,6 @@ async def admin_start(message: types.Message):
 
 @dp.callback_query_handler(text='update')
 async def update_database(callback_query: types.CallbackQuery):
-    interval_services.create_all_intervals()
     week_services.create_all_weekdays()
     await bot.send_message(callback_query.from_user.id, "Все тип-топ", reply_markup=ADMIN)
 

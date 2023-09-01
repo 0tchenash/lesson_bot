@@ -16,3 +16,10 @@ class IntervalDAO:
     def get_all(self):
         data = self.session.query(Intervals).all()
         return data
+
+    # def update(self, data):
+    #     interval = self.session.query(Intervals).filter(Intervals.lesson_time==data.split()[0]).first()
+    #     interval.is_works = True
+    #     self.session.add(interval)
+    #     self.session.commit()
+    #     self.session.close()

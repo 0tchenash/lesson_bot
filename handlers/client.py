@@ -28,7 +28,7 @@ async def add_number(message: types.Message):
 
     user_services.update(message)
 
-    await bot.send_message(message.from_user.id, "INFO", reply_markup=CHOOSE)
+    await bot.send_message(message.from_user.id, "Все данные получены, переходим к выбору занятий", reply_markup=CHOOSE)
 
 
 @dp.callback_query_handler(text='choose_lesson')
