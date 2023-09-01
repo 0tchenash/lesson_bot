@@ -1,29 +1,18 @@
-from datetime import datetime, timedelta
-import calendar
+import datetime
 
-def generate_week():
-    # Начальная дата
-    start_date = datetime.today()
+def get_dates_of_current_month():
+    today = datetime.date.today()
+    first_day_of_month = today.replace(day=1)
+    last_day_of_month = today.replace(day=1, month=today.month % 12 + 1) - datetime.timedelta(days=1)
 
-    # Количество дней в массиве
-    num_days = 7
+    dates = []
+    current_date = first_day_of_month
+    while current_date <= last_day_of_month:
+        formatted_date = {current_date.strftime("%A"):f"{current_date:%Y-%m-%d}"}
+        dates.append(formatted_date)
+        current_date += datetime.timedelta(days=1)
 
-    # Создание массива дней недели
-    days_of_week = [start_date + timedelta(days=i) for i in range(1, num_days)]
-
-    # Получение названий дней недели
-    day_names = [calendar.day_name[day.weekday()] for day in days_of_week]
-
-    # Создание словаря в формате {'DayName': 'YYYY-MM-DD'}
-    day_dict = {day_name: day.strftime('%Y-%m-%d') for day, day_name in zip(days_of_week, day_names)}
-
-    # Сортировка словаря по значениям (датам) в обратном порядке
-    sorted_days = sorted(day_dict.items(), key=lambda x: x[1])
-
-    # Преобразование в желаемый формат
-    result = [{day_name: day_date} for day_name, day_date in sorted_days]
-
-    return result
+    return dates
 
 def generate_hour_intervals(start_hour, end_hour):
     hour_intervals = []

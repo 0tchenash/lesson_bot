@@ -1,12 +1,12 @@
 from db.dao.models import Days, Intervals
-from db.utils import generate_week, generate_hour_intervals
+from db.utils import generate_hour_intervals, get_dates_of_current_month
 
 class WeekdayDAO:
     def __init__(self, session):
         self.session = session
 
     def create_all(self):
-        data = generate_week()
+        data = get_dates_of_current_month()
         intervals = [Intervals(lesson_time=j) for j in generate_hour_intervals(8, 16)]
         for i in data:
             for n, d in i.items():
