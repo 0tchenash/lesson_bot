@@ -1,4 +1,4 @@
-from db.dao.models.intervals import Intervals
+from db.dao.models import Intervals
 from db.utils import generate_hour_intervals
 
 class IntervalDAO:

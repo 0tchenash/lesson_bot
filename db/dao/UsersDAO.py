@@ -1,4 +1,4 @@
-from db.dao.models.users import User
+from db.dao.models import User
 
 class UserDAO:
     def __init__(self, session):
