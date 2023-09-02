@@ -8,5 +8,10 @@ class UserService:
         self.dao.create(message)
 
     def update(self, message):
-        
         self.dao.update(message)
+
+    def delete(self, message):
+        self.dao.delete(message)
+
+    def get_one(self, message):
+        return self.dao.get_one(message)

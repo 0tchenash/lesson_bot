@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from db.dao.models import Base
 
 class DaysIntervals(Base):
+    """Модель таблицы связи дней и интервалов времени"""
     __tablename__ = "day_interval"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

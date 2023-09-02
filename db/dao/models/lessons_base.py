@@ -4,6 +4,7 @@ from db.dao.models import Base
 
 
 class Lessons_base(Base):
+    """Модель таблицы базы с занятиями"""
     __tablename__ = 'lessons_base'
     id = Column(Integer, primary_key=True, autoincrement=True)
     time = Column(String)

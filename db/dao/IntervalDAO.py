@@ -6,7 +6,7 @@ class IntervalDAO:
         self.session = session
 
     def create_all(self):
-        data = generate_hour_intervals(8, 18)
+        data = generate_hour_intervals(8, 1)
         for i in data:
             interval = Intervals(lesson_time=str(i))
             self.session.add(interval)

@@ -3,6 +3,7 @@ from db.dao.models import Base
 
 
 class User(Base):
+    """Модель таблицы пользователя"""
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

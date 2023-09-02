@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from db.dao.models import Base
 
 class Days(Base):
+    """Модель таблицы дней"""
     __tablename__ = "day"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

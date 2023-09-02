@@ -4,6 +4,7 @@ from db.dao.models import Base
 
 
 class Intervals(Base):
+    """Модель таблицы интервалов времени"""
     __tablename__ = "interval"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

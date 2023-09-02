@@ -18,7 +18,7 @@ BTN_CHOOSED_SL = InlineKeyboardButton('Подходит!',
 
 
 def get_kb_days(data):
-    btn_lst = [InlineKeyboardButton(i['day_name'][0:3], callback_data=f"{i['lesson_date']} choosed_day_for_lesson") for i in data]
+    btn_lst = [InlineKeyboardButton(i['day_name'][0:3], callback_data=f"{i['day_name']} choosed_day_for_lesson") for i in data]
     kb = InlineKeyboardMarkup(row_width=5, resize_keyboard=True).add(*btn_lst)
     return kb
 

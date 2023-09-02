@@ -20,3 +20,7 @@ def generate_hour_intervals(start_hour, end_hour):
         interval = f"{hour}-{hour+1}"
         hour_intervals.append(interval)
     return hour_intervals
+
+def make_client():
+    client={}
+    return client
