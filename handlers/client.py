@@ -1,9 +1,10 @@
 from aiogram import types
-from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher import Dispatcher, FSMContext
 from handlers.keyboards.kb_client import START, CHOOSE, GET_PHONE, FORMAT, GROUP, SINGLE, get_kb_days, get_kb_intervals
 from core.create_bot import dp, bot
 from core.implemented import week_schemas, interval_schemas, user_services, lesson_base_services, week_services
 from handlers.utils import get_data_week, get_intervals
+from db.utils import LessonBaseState
 
 data = {}
 
@@ -40,75 +41,72 @@ async def choose_lesson_command(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(text='single_lesson')
 async def choose_single_command(callback_query: types.CallbackQuery):
+    await LessonBaseState.lesson_type.set()
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Description of single lesson", reply_markup=SINGLE)
 
 
 @dp.callback_query_handler(text='group_lesson')
 async def choose_group_command(callback_query: types.CallbackQuery):
+    await LessonBaseState.lesson_type.set()
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Description of group lesson", reply_markup=GROUP)
 
 
-
-@dp.callback_query_handler(text='choosed_group_lesson')
-async def choosed_group_command(callback_query: types.CallbackQuery):
-    global data
-    data['lesson_type'] = 'Групповое'
-    print(data)
+@dp.callback_query_handler(text='choosed_group_lesson', state=LessonBaseState.lesson_type)
+async def choosed_group_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_type='Групповое')
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
+    await LessonBaseState.next()
 
 
-@dp.callback_query_handler(text='choosed_single_lesson')
-async def choosed_single_command(callback_query: types.CallbackQuery):
-    global data
-    data['lesson_type'] = 'Индивидуальное'
-    print(data)
+@dp.callback_query_handler(text='choosed_single_lesson', state=LessonBaseState.lesson_type)
+async def choosed_single_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_type='Индивидуальное')
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
+    await LessonBaseState.next()
 
 
-@dp.callback_query_handler(text_endswith='choosed_day_for_lesson')
-async def choosed_day_for_group_command(callback_query: types.CallbackQuery):
-    global data
-    data['day'] = callback_query.data.split()[0]
-    print(data)
+@dp.callback_query_handler(text_endswith='choosed_day_for_lesson', state=LessonBaseState.lesson_day)
+async def choosed_day_for_group_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_day=callback_query.data.split()[0])
+    data = await state.get_data()
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Intervals", reply_markup=get_kb_intervals(interval_schemas.dump(get_intervals(data))))
+    await LessonBaseState.next()
 
 
-@dp.callback_query_handler(text_endswith='choosed_day_for_lesson')
-async def choosed_day_for_single_command(callback_query: types.CallbackQuery):
-    global data
-    data['day'] = callback_query.data.split()[0]
-    print(data)
+@dp.callback_query_handler(text_endswith='choosed_day_for_lesson', state=LessonBaseState.lesson_day)
+async def choosed_day_for_single_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_day=callback_query.data.split()[0])
+    data = await state.get_data()
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Intervals", reply_markup=get_kb_intervals(interval_schemas.dump(get_intervals(data))))
+    await LessonBaseState.next()
 
 
-@dp.callback_query_handler(text_endswith='choosed_interval_for_lesson')
-async def choosed_interval_for_group_command(callback_query: types.CallbackQuery):
-    global data
-    data['time'] = callback_query.data.split()[0]
-    print(data)
+@dp.callback_query_handler(text_endswith='choosed_interval_for_lesson', state=LessonBaseState.lesson_time)
+async def choosed_interval_for_group_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_time=callback_query.data.split()[0])
+    data = await state.get_data()
     week_services.take_time(data)
     lesson_base_services.create(data, callback_query)
-    data = {}
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Вы записаны!")
+    await state.finish()
 
 
-@dp.callback_query_handler(text_endswith='choosed_interval_for_lesson')
-async def choosed_interval_for_single_command(callback_query: types.CallbackQuery):
-    global data
-    data['time'] = callback_query.data.split()[0]
-    print(data)
+@dp.callback_query_handler(text_endswith='choosed_interval_for_lesson', state=LessonBaseState.lesson_time)
+async def choosed_interval_for_single_command(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(lesson_time=callback_query.data.split()[0])
+    data = await state.get_data()
     week_services.take_time(data)
     lesson_base_services.create(data, callback_query)
-    data = {}
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Вы записаны!")
+    await state.finish()
 
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands=['start'])

@@ -14,3 +14,7 @@ class LessonDAO:
     def get_all(self):
         data = self.session.query(Lesson).all()
         return data
+
+    # def get_one(self, data):
+    #     lesson = self.session.query(Lesson).filter(Lesson.type==data['lesson_type']).first()
+    #     return lesson

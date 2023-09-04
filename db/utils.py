@@ -1,4 +1,5 @@
 import datetime
+from aiogram.dispatcher.filters.state import StatesGroup, State
 
 def get_dates_of_current_month():
     today = datetime.date.today()
@@ -24,3 +25,8 @@ def generate_hour_intervals(start_hour, end_hour):
 def make_client():
     client={}
     return client
+
+class LessonBaseState(StatesGroup):
+    lesson_type = State()
+    lesson_day = State()
+    lesson_time = State()

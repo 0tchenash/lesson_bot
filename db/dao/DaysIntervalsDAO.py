@@ -26,15 +26,15 @@ class Days_intervalsDAO:
         return data
 
     def get_all_intervals(self, data):
-        day = self.session.query(Days).filter(Days.day_name==data['day']).first()
+        day = self.session.query(Days).filter(Days.day_name==data['lesson_day']).first()
         intervals = self.session.query(Intervals.lesson_time).join(DaysIntervals, Intervals.id == DaysIntervals.interval_id).join(Days, Days.id == DaysIntervals.day_id).filter(Days.id==day.id).filter(DaysIntervals.is_works==False).all()
         return intervals
 
     def take_time(self, data):
         """При выборе данного интервала пользователем происходит изменение параметра is_works,
             указанный промежуток перестает быть доступным"""
-        day = self.session.query(Days).filter(Days.day_name==data['day']).first()
-        time = self.session.query(Intervals).filter(Intervals.lesson_time==data['time']).first()
+        day = self.session.query(Days).filter(Days.day_name==data['lesson_day']).first()
+        time = self.session.query(Intervals).filter(Intervals.lesson_time==data['lesson_time']).first()
         date = self.session.query(DaysIntervals).filter(DaysIntervals.day_id==day.id).filter(DaysIntervals.interval_id==time.id).first()
         date.is_works = True
         self.session.add(date)
