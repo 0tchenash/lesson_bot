@@ -1,7 +1,7 @@
-from db.dao.Lessons_baseDAO import Lessons_baseDAO
+from db.dao.Lessons_baseDAO import LessonsBaseDAO
 
-class Lessons_baseService:
-    def __init__(self, dao: Lessons_baseDAO):
+class LessonsBaseService:
+    def __init__(self, dao: LessonsBaseDAO):
         self.dao = dao
 
     def create(self, data, message):

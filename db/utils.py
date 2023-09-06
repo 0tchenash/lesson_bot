@@ -29,4 +29,5 @@ def make_client():
 class LessonBaseState(StatesGroup):
     lesson_type = State()
     lesson_day = State()
+    day_id = State()
     lesson_time = State()

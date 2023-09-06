@@ -1,6 +1,6 @@
 from db.dao.models import Lessons_base, User, DaysIntervals, Days, Intervals, Lesson
 
-class Lessons_baseDAO:
+class LessonsBaseDAO:
     def __init__(self, session):
         self.session = session
 
@@ -14,4 +14,3 @@ class Lessons_baseDAO:
         self.session.add(lesson)
         self.session.commit()
         self.session.close()
-

@@ -14,11 +14,11 @@ async def admin_start(message: types.Message):
 
 @dp.callback_query_handler(text='update')
 async def update_database(callback_query: types.CallbackQuery):
-    data = week_services.get_all_weekdays()
+    data = week_services.get_all_days()
     if data:
         await bot.send_message(callback_query.from_user.id, "Данные уже на месте", reply_markup=ADMIN)
     else:
-        week_services.create_all_weekdays()
+        week_services.create_all()
         lesson_services.create_all_lessons()
         await bot.send_message(callback_query.from_user.id, "Все тип-топ", reply_markup=ADMIN)
 
