@@ -113,13 +113,13 @@ async def choosed_interval_for_single_command(callback_query: types.CallbackQuer
 
 
 
-@dp.callback_query_handler(text='take_time_period')
+@dp.callback_query_handler(text='take_time_period', state=LessonBaseState.lesson_time)
 async def take_lesson_time_period(callback_query: types.CallbackQuery, state: FSMContext):
-    # data = await state.get_data()
-    # week_services.take_time_period(data)
+    data = await state.get_data()
+    week_services.take_time_period(data)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Все тип-топ, go to sleep")
-    # await state.finish()
+    await state.finish()
 
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands=['start'])
