@@ -1,5 +1,6 @@
 from db.dao.models import Days, Intervals, DaysIntervals
 from db.utils import generate_hour_intervals, get_dates_of_current_month
+from db.schemas.days import DaysSchema
 
 class DaysIntervalsDAO:
     def __init__(self, session):
@@ -54,6 +55,7 @@ class DaysIntervalsDAO:
 
 
     def take_time_period(self, data):
-        days = self.get_similar_days(data)
+        day_schema = DaysSchema(many=True)
+        days = day_schema.dump(self.get_similar_days(data), many=True)
         for i in days:
-            self.take_time(data, i.id)
+            self.take_time(data, i['id'])
