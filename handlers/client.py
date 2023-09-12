@@ -96,7 +96,7 @@ async def choosed_interval_for_group_command(callback_query: types.CallbackQuery
     await state.update_data(lesson_time=callback_query.data.split()[0])
     data = await state.get_data()
     week_services.take_time(data, data['day_id'])
-    lesson_base_services.create(data, callback_query)
+    lesson_base_services.create(data, data['day_id'], callback_query)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
 
@@ -106,8 +106,8 @@ async def choosed_interval_for_group_command(callback_query: types.CallbackQuery
 async def choosed_interval_for_single_command(callback_query: types.CallbackQuery, state: FSMContext):
     await state.update_data(lesson_time=callback_query.data.split()[0])
     data = await state.get_data()
-    week_services.take_time(data)
-    lesson_base_services.create(data, callback_query)
+    week_services.take_time(data, data['day_id'])
+    lesson_base_services.create(data, data['day_id'],  callback_query)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
 
@@ -116,7 +116,10 @@ async def choosed_interval_for_single_command(callback_query: types.CallbackQuer
 @dp.callback_query_handler(text='take_time_period', state=LessonBaseState.lesson_time)
 async def take_lesson_time_period(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    week_services.take_time_period(data)
+    days = week_schemas.dump(week_services.get_similar_days(data))
+    for i in days:
+        week_services.take_time(data, i['id'])
+        lesson_base_services.create(data, i['id'], callback_query)
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Все тип-топ, go to sleep")
     await state.finish()

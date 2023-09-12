@@ -18,3 +18,6 @@ class DayService:
 
     def take_time_period(self, data):
         self.dao.take_time_period(data)
+
+    def get_similar_days(self, data):
+        return self.dao.get_similar_days(data)
