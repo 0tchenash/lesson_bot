@@ -1,16 +1,22 @@
 from aiogram import types
 from aiogram.dispatcher import Dispatcher, FSMContext
-from handlers.keyboards.kb_client import START, CHOOSE, GET_PHONE, FORMAT, GROUP, SINGLE, get_kb_days, get_kb_intervals, TAKE_TIME
+from handlers.keyboards.kb_client import START, MENU, CHOOSE, GET_PHONE, FORMAT, GROUP, SINGLE, get_kb_days, get_kb_intervals, TAKE_TIME
 from core.create_bot import dp, bot
-from core.implemented import week_schemas, interval_schemas, user_services, lesson_base_services, week_services
+from core.implemented import week_schemas, days_schemas, intervals_schemas, user_services, lesson_base_services, week_services, schedule_schemas
 from handlers.utils import get_data_week, get_intervals
 from db.utils import LessonBaseState
+from core.config import ADMIN_ID
 
-data = {}
 
 async def process_start_command(message: types.Message):
-    await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!",
-                        reply_markup=START)
+    user = user_services.get_one(message)
+
+    if user is not None:
+        await message.reply(f"С возвращением, {message.from_user.full_name}!", reply_markup=MENU)
+    else:
+        await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!",
+                            reply_markup=START)
+
 
 @dp.callback_query_handler(text='add_user_data')
 async def add_user(callback_query: types.CallbackQuery):
@@ -57,7 +63,7 @@ async def choose_group_command(callback_query: types.CallbackQuery):
 async def choosed_group_command(callback_query: types.CallbackQuery, state: FSMContext):
     await state.update_data(lesson_type='Групповое')
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
+    await bot.send_message(callback_query.from_user.id, "Дни, доступные для записи:", reply_markup=get_kb_days(days_schemas.dump(get_data_week())))
     await LessonBaseState.next()
 
 
@@ -65,7 +71,7 @@ async def choosed_group_command(callback_query: types.CallbackQuery, state: FSMC
 async def choosed_single_command(callback_query: types.CallbackQuery, state: FSMContext):
     await state.update_data(lesson_type='Индивидуальное')
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Days for registration", reply_markup=get_kb_days(week_schemas.dump(get_data_week())))
+    await bot.send_message(callback_query.from_user.id, "Дни, доступные для записи:", reply_markup=get_kb_days(days_schemas.dump(get_data_week())))
     await LessonBaseState.next()
 
 
@@ -76,7 +82,7 @@ async def choosed_day_for_group_command(callback_query: types.CallbackQuery, sta
     await state.update_data(day_id=callback_query.data.split()[1])
     data = await state.get_data()
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Intervals", reply_markup=get_kb_intervals(interval_schemas.dump(get_intervals(data))))
+    await bot.send_message(callback_query.from_user.id, "Время, доступное для записи:", reply_markup=get_kb_intervals(intervals_schemas.dump(get_intervals(data))))
     await LessonBaseState.next()
 
 
@@ -87,7 +93,7 @@ async def choosed_day_for_single_command(callback_query: types.CallbackQuery, st
     await state.update_data(day_id=callback_query.data.split()[1])
     data = await state.get_data()
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Intervals", reply_markup=get_kb_intervals(interval_schemas.dump(get_intervals(data))))
+    await bot.send_message(callback_query.from_user.id, "Время, доступное для записи:", reply_markup=get_kb_intervals(intervals_schemas.dump(get_intervals(data))))
     await LessonBaseState.next()
 
 
@@ -98,8 +104,8 @@ async def choosed_interval_for_group_command(callback_query: types.CallbackQuery
     week_services.take_time(data, data['day_id'])
     lesson_base_services.create(data, data['day_id'], callback_query)
     await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(ADMIN_ID, "У вас новая запись!")
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
-
 
 
 @dp.callback_query_handler(text_endswith='choosed_interval_for_lesson', state=LessonBaseState.lesson_time)
@@ -109,8 +115,8 @@ async def choosed_interval_for_single_command(callback_query: types.CallbackQuer
     week_services.take_time(data, data['day_id'])
     lesson_base_services.create(data, data['day_id'],  callback_query)
     await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(ADMIN_ID, "У вас новая запись!")
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
-
 
 
 @dp.callback_query_handler(text='take_time_period', state=LessonBaseState.lesson_time)
@@ -121,8 +127,19 @@ async def take_lesson_time_period(callback_query: types.CallbackQuery, state: FS
         week_services.take_time(data, i['id'])
         lesson_base_services.create(data, i['id'], callback_query)
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Все тип-топ, go to sleep")
+    await bot.send_message(callback_query.from_user.id, "Расписание создано!")
+    await bot.send_message(ADMIN_ID, f"Ученик {callback_query.from_user.id} записался на весь месяц!")
     await state.finish()
+
+
+@dp.callback_query_handler(text='show_my_schedule')
+async def show_my_schedule(callback_query: types.CallbackQuery):
+    schedule = lesson_base_services.get_all_lessons_for_one_user(callback_query.from_user.id)
+    await bot.send_message(callback_query.from_user.id, schedule_schemas.dump(schedule))
+
+# @dp.callback_query_handler(text='delete_my_lesson')
+
+
 
 def register_handler_client(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands=['start'])

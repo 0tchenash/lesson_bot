@@ -1,6 +1,6 @@
 from db.dao.models import Days, Intervals, DaysIntervals
 from db.utils import generate_hour_intervals, get_dates_of_current_month
-from db.schemas.days import DaysSchema
+from db.schemas.days_intervals import DaysSchema
 
 class DaysIntervalsDAO:
     def __init__(self, session):
@@ -21,14 +21,17 @@ class DaysIntervalsDAO:
         self.session.close()
 
     def get_one_day(self, day_id):
+        """Получение данных одного дня"""
         day = self.session.query(Days).filter(Days.id==int(day_id)).first()
         return day
 
     def get_similar_days(self, data):
+        """Получение списка дней с одинаковыми именами"""
         days = self.session.query(Days).filter(Days.day_name==data['lesson_day']).all()
         return days
 
     def get_one_interval(self, data):
+        """Получение одного временного интервала"""
         time = self.session.query(Intervals).filter(Intervals.lesson_time==data['lesson_time']).first()
         return time
 
@@ -38,6 +41,7 @@ class DaysIntervalsDAO:
         return data
 
     def get_all_intervals(self, data):
+        """Получение всех интервалов у одного конкретного дня"""
         day = self.session.query(Days).filter(Days.day_name==data['lesson_day']).first()
         intervals = self.session.query(Intervals.lesson_time).join(DaysIntervals, Intervals.id == DaysIntervals.interval_id).join(Days, Days.id == DaysIntervals.day_id).filter(Days.id==day.id).filter(DaysIntervals.is_works==False).all()
         return intervals
@@ -55,6 +59,7 @@ class DaysIntervalsDAO:
 
 
     def take_time_period(self, data):
+        """Запись на одно и то же время на все дни с указанным именем"""
         day_schema = DaysSchema(many=True)
         days = day_schema.dump(self.get_similar_days(data), many=True)
         for i in days:

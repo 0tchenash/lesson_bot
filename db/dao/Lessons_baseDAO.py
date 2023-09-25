@@ -19,3 +19,12 @@ class LessonsBaseDAO:
         self.session.add(lesson)
         self.session.commit()
         self.session.close()
+
+    def get_all_lessons_for_one_user(self, user_id):
+        user = self.session.query(User).filter(User.user_telegram_id==user_id).first()
+        lessons = self.session.query(Intervals.lesson_time, Days.day_name)\
+            .join(Lessons_base, DaysIntervals.id == Lessons_base.lesson_id)\
+            .join(DaysIntervals, Intervals.id == DaysIntervals.interval_id)\
+            .join(Days, Days.id == DaysIntervals.day_id)\
+            .filter(Lessons_base.user_id==user.id).all()
+        return lessons

@@ -1,6 +1,6 @@
 from db.dao.DaysIntervalsDAO import DaysIntervalsDAO
 
-class DayService:
+class DaysIntervalsService:
     def __init__(self, dao: DaysIntervalsDAO):
         self.dao = dao
 

@@ -3,7 +3,7 @@ from aiogram.dispatcher import Dispatcher
 from core.create_bot import dp, bot
 from core.config import ADMIN_ID
 from handlers.keyboards.kb_admin import ADMIN
-from core.implemented import week_services, week_schemas, interval_services, interval_schemas, lesson_services
+from core.implemented import week_services, lesson_services
 from handlers.utils import get_data_week, get_intervals
 
 async def admin_start(message: types.Message):

@@ -7,6 +7,9 @@ class LessonsBaseService:
     def create(self, data, day_id, message):
         self.dao.create(data, day_id, message)
 
+    def get_all_lessons_for_one_user(self, user_id):
+        return self.dao.get_all_lessons_for_one_user(user_id)
+
 
 
     # def get_all_intervals(self):
