@@ -4,7 +4,7 @@ from handlers.keyboards.kb_client import START, MENU, CHOOSE, GET_PHONE, FORMAT,
 from core.create_bot import dp, bot
 from core.implemented import week_schemas, days_schemas, intervals_schemas, user_services, lesson_base_services, week_services, schedule_schemas
 from handlers.utils import get_data_week, get_intervals
-from db.utils import LessonBaseState
+from db.utils import LessonBaseState, serialize
 from core.config import ADMIN_ID
 
 
@@ -16,6 +16,11 @@ async def process_start_command(message: types.Message):
     else:
         await message.reply(f"Привет!\nЭтот бот поможет тебе записаться на урок!",
                             reply_markup=START)
+
+
+@dp.callback_query_handler(text='menu')
+async def menu(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, "Меню", reply_markup=MENU)
 
 
 @dp.callback_query_handler(text='add_user_data')
@@ -106,6 +111,7 @@ async def choosed_interval_for_group_command(callback_query: types.CallbackQuery
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(ADMIN_ID, "У вас новая запись!")
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
+    await state.finish()
 
 
 @dp.callback_query_handler(text_endswith='choosed_interval_for_lesson', state=LessonBaseState.lesson_time)
@@ -117,11 +123,12 @@ async def choosed_interval_for_single_command(callback_query: types.CallbackQuer
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(ADMIN_ID, "У вас новая запись!")
     await bot.send_message(callback_query.from_user.id, "Вы записаны!", reply_markup=TAKE_TIME)
+    await state.finish()
 
 
-@dp.callback_query_handler(text='take_time_period', state=LessonBaseState.lesson_time)
-async def take_lesson_time_period(callback_query: types.CallbackQuery, state: FSMContext):
-    data = await state.get_data()
+@dp.callback_query_handler(text='take_time_period')
+async def take_lesson_time_period(callback_query: types.CallbackQuery):
+    data = serialize(lesson_base_services.get_last_users_sign_up(callback_query.from_user.id))
     days = week_schemas.dump(week_services.get_similar_days(data))
     for i in days:
         week_services.take_time(data, i['id'])
@@ -129,7 +136,6 @@ async def take_lesson_time_period(callback_query: types.CallbackQuery, state: FS
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Расписание создано!")
     await bot.send_message(ADMIN_ID, f"Ученик {callback_query.from_user.id} записался на весь месяц!")
-    await state.finish()
 
 
 @dp.callback_query_handler(text='show_my_schedule')

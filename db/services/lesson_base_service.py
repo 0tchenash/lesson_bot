@@ -10,6 +10,9 @@ class LessonsBaseService:
     def get_all_lessons_for_one_user(self, user_id):
         return self.dao.get_all_lessons_for_one_user(user_id)
 
+    def get_last_users_sign_up(self, user_id):
+        return self.dao.get_last_users_sign_up(user_id)
+
 
 
     # def get_all_intervals(self):

@@ -1,7 +1,7 @@
 """new base 12.0
 
 Revision ID: 9e395821de49
-Revises: 
+Revises:
 Create Date: 2023-09-01 16:32:28.600858
 
 """
@@ -58,12 +58,12 @@ def upgrade() -> None:
     )
     op.create_table('lessons_base',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('time', sa.String(), nullable=True),
-    sa.Column('total_price', sa.DECIMAL(), nullable=True),
+    sa.Column('time_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('lesson_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['lesson_id'], ['lesson.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['time_id'], ['day_interval.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

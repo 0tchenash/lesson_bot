@@ -14,3 +14,7 @@ class ScheduleSchema(Schema):
     user_id = fields.Int()
     lesson_time = fields.Str()
     day_name = fields.Str()
+    lesson_id = fields.Int()
+    day_id = fields.Int()
+    type = fields.Str()
+    price = fields.Decimal()

@@ -22,9 +22,12 @@ def generate_hour_intervals(start_hour, end_hour):
         hour_intervals.append(interval)
     return hour_intervals
 
-def make_client():
-    client={}
-    return client
+def serialize(data):
+    dic_ = {'lesson_type': data.type,
+            'lesson_day': data.day_name,
+            'day_id': data.id,
+            'lesson_time': data.lesson_time}
+    return dic_
 
 class LessonBaseState(StatesGroup):
     lesson_type = State()
